@@ -1,0 +1,140 @@
+#!/usr/bin/env lua
+
+local function exit(...)
+  io.stderr:write(string.format(...))
+  io.stderr:write("\n")
+  os.exit(1)
+end
+
+local function tryrequire(mod)
+  local s, result = pcall(require, mod)
+  if not s then exit(result) end
+  return result
+end
+
+if not os.getenv("HOME") then
+  exit("$HOME not set - are you on windows?")
+end
+
+if not arg then
+  exit("'arg' table is not present; you need at least Lua 5.3")
+end
+
+local dir = os.getenv("HOME") .. "/.piecestopractice/"
+local days = dir .. "days/"
+local assignments = dir .. "assignments/"
+
+local stat = tryrequire("posix.sys.stat")
+local dirent = tryrequire("posix.dirent")
+
+local actions = {}
+
+actions.help = function()
+  io.stderr:write([[
+Usage: ptp <command> [arg ...]
+
+A fairly simple command-line music practice tool.  Available commands:
+
+help:
+  prints this help message
+
+add-assignment <name>:
+  add the specified assignment to the program's data directory
+
+add-set <set>:
+  create a new practice set
+
+practice <name>:
+  mark the specified assignment as practiced for the day, or add time to it
+
+list <set> [qualifier]:
+  return all assignment in the specified list: all, practiced, sets, or the name of a set; if 'practiced', qualifier can be a day to list
+
+add-to-set <name> <set>:
+  add the specified assignment to the specified set
+
+del-from-set <name> <set>:
+  remove the specified assignment from the specified set
+
+Pieces to Practice is copyright (c) 2022 Ocawesome101 under the GNU GPLv3.
+]])
+  os.exit(0)
+end
+
+local function checkdirs()
+  stat.mkdir(dir)
+  stat.mkdir(days)
+  stat.mkdir(assignments)
+end
+
+local function date()
+  return os.date("%Y-%m-%d")
+end
+
+actions["add-assignment"] = function(name)
+  if not name then exit("missing name; see '%s help'", arg[0]) end
+  checkdirs()
+  local f, err = io.open(assignments .. name, "w")
+  if not f then exit("failed opening file: %s", err) end
+  f:close()
+end
+
+actions["add-set"] = function(set)
+  if not set then exit("missing set; see '%s help'", arg[0]) end
+  checkdirs()
+  local s = stat.lstat(assignments .. set)
+  if s then exit("there is already a set or assignment by that name") end
+  stat.mkdir(assignments .. set)
+end
+
+actions["practice"] = function(name)
+  if not name then exit("missing name; see '%s help'", arg[0]) end
+  checkdirs()
+  local day = days .. date()
+  local assignment = day .. "/" .. name
+  stat.mkdir(day)
+  local time = 0
+  local score = 0
+
+  if stat.lstat(assignment) then
+    local hand = io.open(assignment, "r")
+    time = tonumber(hand:read("l")) or 0
+    score = tonumber(hand:read("l")) or 0
+  end
+
+  local start = os.time()
+  io.write("when done, enter a score and press ENTER")
+  score = tonumber(io.read("l")) or 5
+  time = time + os.time() - start
+
+  local hand = io.open(assignment, "w")
+  hand:write(tostring(time), "\n")
+  hand:write(tostring(score), "\n")
+  hand:close()
+end
+
+actions["list"] = function(set, qualifier)
+  if not set then exit("missing 'set' argument; see '%s help'", arg[0]) end
+  if qualifier and set ~= "practiced" then
+    exit("misguided 'qualifier' argument; see '%s help'", arg[0])
+  end
+  if set == "all" then
+    for file in dirent.files() then
+    end
+  end
+end
+
+actions["add-to-set"] = function(name, set)
+end
+
+actions["del-from-set"] = function(name, set)
+end
+
+local command = arg[1]
+if not command then
+  exit("see '%s help' for usage", arg[0])
+elseif not actions[command] then
+  exit("subcommand '%s' is not available; see '%s help'", command, arg[0])
+else
+  actions[command](table.unpack(arg, 2))
+end
