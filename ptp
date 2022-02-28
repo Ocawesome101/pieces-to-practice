@@ -119,15 +119,53 @@ actions["list"] = function(set, qualifier)
     exit("misguided 'qualifier' argument; see '%s help'", arg[0])
   end
   if set == "all" then
-    for file in dirent.files() then
+    for file in dirent.files(assignments) do
+      local full = assignments .. file
+      if file ~= "." and file ~= ".." and stat.lstat(full).st_mode & 0xFFFF
+          ~= stat.S_IFDIR then
+        print(file)
+      end
     end
+  elseif set == "sets" then
+    for file in dirent.files(assignments) do
+      local full = assignments .. file
+      if file ~= "." and file ~= ".." and stat.lstat(full).st_mode & 0xFFFF
+          == stat.S_IFDIR then
+        print(file)
+      end
+    end
+  elseif set == "days" then
+    for file in dirent.files(days) do
+      if file ~= "." and file ~= ".." then
+        print(file)
+      end
+    end
+  elseif set == "practiced" then
+    qualifier = qualifier or date()
+    local day = days .. qualifier
+    for file in dirent.files(day) do
+      if file ~= "." and file ~= ".." then
+        print(file)
+      end
+    end
+  else
+    exit("invalid 'set' argument; see '%s help'", arg[0])
   end
 end
 
 actions["add-to-set"] = function(name, set)
+  if not name then exit("missing 'name' argument; see '%s help'", arg[0]) end
+  if not set then exit("missing 'set' argument; see '%s help'", arg[0]) end
+
+  local full = assignments .. set .. "/" .. name
+  local h = io.open(full, "w")
+  if not h then exit("given practice set is not present") end
+  h:close()
 end
 
 actions["del-from-set"] = function(name, set)
+  local full = assignments .. set .. "/" .. name
+  os.remove(full)
 end
 
 local command = arg[1]
