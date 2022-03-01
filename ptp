@@ -169,7 +169,26 @@ actions["list"] = function(set, qualifier)
       end
     end
   else
-    exit("invalid 'set' argument; see '%s help'", arg[0])
+    local try = assignments .. set
+    local st = stat.lstat(try)
+    if (not st) or stat.S_ISDIR(st.st_mode) == 0 then
+      exit("invalid 'set' argument; see '%s help'", arg[0])
+    else
+      for file in dirent.files(try) do
+        local full = assignments .. file
+        if file ~= "." and file ~= ".." then
+          local hand = io.open(full, "r")
+          if not hand then
+            io.stderr:write("bad assignment id %d - removing it\n")
+            os.remove(full)
+          else
+            local data = hand:read("a")
+            hand:close()
+            print(file, data)
+          end
+        end
+      end
+    end
   end
 end
 
