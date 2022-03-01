@@ -56,6 +56,9 @@ add-to-set <name> <set>:
 del-from-set <name> <set>:
   remove the specified assignment from the specified set
 
+get-streak
+  print the number of days in a row you've marked something
+
 Pieces to Practice is copyright (c) 2022 Ocawesome101 under the GNU GPLv3.
 ]])
   os.exit(0)
@@ -67,8 +70,8 @@ local function checkdirs()
   stat.mkdir(assignments)
 end
 
-local function date()
-  return os.date("%Y-%m-%d")
+local function date(time)
+  return os.date("%Y-%m-%d", time)
 end
 
 actions["add-assignment"] = function(longname)
@@ -183,6 +186,17 @@ end
 actions["del-from-set"] = function(name, set)
   local full = assignments .. set .. "/" .. name
   os.remove(full)
+end
+
+actions["get-streak"] = function()
+  local time = os.time()
+  local count = -1
+  repeat
+    local day = date(time)
+    time = time - 86400 -- remove one day
+    count = count + 1
+  until not stat.lstat(days .. day)
+  print(count)
 end
 
 local command = arg[1]

@@ -30,4 +30,6 @@ $ ptp list days
 2022-02-28
 $ ptp list practiced
 189794  Dvořák - Humoresque No. 7
+$ ptp get-streak
+1
 ```
