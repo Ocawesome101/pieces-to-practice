@@ -129,8 +129,8 @@ actions["list"] = function(set, qualifier)
   if set == "all" then
     for file in dirent.files(assignments) do
       local full = assignments .. file
-      if file ~= "." and file ~= ".." and stat.lstat(full).st_mode & 0xFFFF
-          ~= stat.S_IFDIR then
+      local st = stat.lstat(full)
+      if file ~= "." and file ~= ".." and stat.S_ISDIR(st.st_mode) == 0 then
         local hand = io.open(full, "r")
         local data = hand:read("a")
         hand:close()
@@ -140,8 +140,8 @@ actions["list"] = function(set, qualifier)
   elseif set == "sets" then
     for file in dirent.files(assignments) do
       local full = assignments .. file
-      if file ~= "." and file ~= ".." and stat.lstat(full).st_mode & 0xFFFF
-          == stat.S_IFDIR then
+      local st = stat.lstat(full)
+      if file ~= "." and file ~= ".." and stat.S_ISDIR(st.st_mode) ~= 0 then
         print(file)
       end
     end
