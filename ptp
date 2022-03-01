@@ -38,8 +38,8 @@ A fairly simple command-line music practice tool.  Available commands:
 help:
   prints this help message
 
-add-assignment <name>:
-  add the specified assignment to the program's data directory
+add-assignment <longname>:
+  add the specified assignment to the program's data directory; prints the ID of the new assignment
 
 add-set <set>:
   create a new practice set
@@ -71,12 +71,16 @@ local function date()
   return os.date("%Y-%m-%d")
 end
 
-actions["add-assignment"] = function(name)
-  if not name then exit("missing name; see '%s help'", arg[0]) end
+actions["add-assignment"] = function(longname)
+  if not longname then exit("missing longname; see '%s help'", arg[0]) end
   checkdirs()
+  math.randomseed(os.time())
+  local name = tostring(math.random(100000, 999999))
   local f, err = io.open(assignments .. name, "w")
   if not f then exit("failed opening file: %s", err) end
+  f:write(longname)
   f:close()
+  print(name)
 end
 
 actions["add-set"] = function(set)
@@ -103,8 +107,8 @@ actions["practice"] = function(name)
   end
 
   local start = os.time()
-  io.write("when done, enter a score and press ENTER")
-  score = tonumber(io.read("l")) or 5
+  io.write("when done, enter a score and press ENTER\n")
+  score = math.max(0, math.min(tonumber(io.read("l")) or 5, 10))
   time = time + os.time() - start
 
   local hand = io.open(assignment, "w")
@@ -118,12 +122,16 @@ actions["list"] = function(set, qualifier)
   if qualifier and set ~= "practiced" then
     exit("misguided 'qualifier' argument; see '%s help'", arg[0])
   end
+  checkdirs()
   if set == "all" then
     for file in dirent.files(assignments) do
       local full = assignments .. file
       if file ~= "." and file ~= ".." and stat.lstat(full).st_mode & 0xFFFF
           ~= stat.S_IFDIR then
-        print(file)
+        local hand = io.open(full, "r")
+        local data = hand:read("a")
+        hand:close()
+        print(file, data)
       end
     end
   elseif set == "sets" then
@@ -144,8 +152,17 @@ actions["list"] = function(set, qualifier)
     qualifier = qualifier or date()
     local day = days .. qualifier
     for file in dirent.files(day) do
+      local full = assignments .. file
       if file ~= "." and file ~= ".." then
-        print(file)
+        local hand = io.open(full, "r")
+        if not hand then
+          io.stderr:write("bad assignment id %d - removing it\n")
+          os.remove(full)
+        else
+          local data = hand:read("a")
+          hand:close()
+          print(file, data)
+        end
       end
     end
   else
