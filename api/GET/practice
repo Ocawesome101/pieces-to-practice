@@ -1,0 +1,37 @@
+#!/usr/bin/env lua
+
+local line = io.read()
+
+local id = tonumber(line:match("id=(%d+)"))
+if not id then
+  print("bad ID")
+end
+
+local cmd = io.popen("./ptp list all | grep " .. tostring(id), "r")
+local name = cmd:read()
+cmd:close()
+
+local start = os.time()
+
+print(string.format([[
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+
+<html>
+  <body>
+    Practicing %s<br>
+    <p>Choose rating:</p>
+    <a href="/complete?id=%d?start=%d?rating=1">1</a>
+    <a href="/complete?id=%d?start=%d?rating=2">2</a>
+    <a href="/complete?id=%d?start=%d?rating=3">3</a>
+    <a href="/complete?id=%d?start=%d?rating=4">4</a>
+    <a href="/complete?id=%d?start=%d?rating=5">5</a>
+    <a href="/complete?id=%d?start=%d?rating=6">6</a>
+    <a href="/complete?id=%d?start=%d?rating=7">7</a>
+    <a href="/complete?id=%d?start=%d?rating=8">8</a>
+    <a href="/complete?id=%d?start=%d?rating=9">9</a>
+    <a href="/complete?id=%d?start=%d?rating=10">10</a>
+  </body>
+</html>
+]], name, id, start, id, start, id, start, id, start, id, start, id, start, id, start, id, start, id, start, id, start))

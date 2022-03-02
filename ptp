@@ -94,7 +94,7 @@ actions["add-set"] = function(set)
   stat.mkdir(assignments .. set)
 end
 
-actions["practice"] = function(name)
+actions["practice"] = function(name, start, rating)
   if not name then exit("missing name; see '%s help'", arg[0]) end
   checkdirs()
   local day = days .. date()
@@ -109,10 +109,15 @@ actions["practice"] = function(name)
     score = tonumber(hand:read("l")) or 0
   end
 
-  local start = os.time()
-  io.write("when done, enter a score and press ENTER\n")
-  score = math.max(0, math.min(tonumber(io.read("l")) or 5, 10))
-  time = time + os.time() - start
+  if start and rating then
+    time = time + os.time() - (tonumber(start) or 0)
+    score = math.max(0, math.min(tonumber(rating), 10))
+  else
+    local tstart = os.time()
+    io.write("when done, enter a score and press ENTER\n")
+    score = math.max(0, math.min(tonumber(io.read("l")) or 5, 10))
+    time = time + os.time() - tstart
+  end
 
   local hand = io.open(assignment, "w")
   hand:write(tostring(time), "\n")
@@ -156,6 +161,7 @@ actions["list"] = function(set, qualifier)
     local day = days .. qualifier
     for file in dirent.files(day) do
       local full = assignments .. file
+      local pfull = day .. "/" .. file
       if file ~= "." and file ~= ".." then
         local hand = io.open(full, "r")
         if not hand then
@@ -164,7 +170,10 @@ actions["list"] = function(set, qualifier)
         else
           local data = hand:read("a")
           hand:close()
-          print(file, data)
+          local hand2 = io.open(pfull, "r")
+          local time, rating = hand2:read("l", "l")
+          -- subtract 684000 from the time because it's 19h off otherwise
+          print(file, data, os.date("%H:%M:%S", time - 68400), rating)
         end
       end
     end

@@ -1,11 +1,27 @@
 #!/usr/bin/env lua
 
-local ptp = io.popen("./ptp list all", "r")
 local assignments = ""
+local practiced = ""
+local blacklist = {}
+local ptp = io.popen("./ptp list practiced")
 
 for assignment in ptp:lines("l") do
   local id, name = assignment:match("^(%d+) *(.+)$")
-  assignments = assignments .. string.format("<a href='/practice?id=%s'>%s</a><br>\n", id, name)
+  blacklist[id] = true
+  practiced = practiced .. string.format(
+    "<a href='/practice?id=%s'>%s</a><br>\n", id, name)
+end
+
+ptp:close()
+
+ptp = io.popen("./ptp list all", "r")
+
+for assignment in ptp:lines("l") do
+  local id, name = assignment:match("^(%d+) *(.+)$")
+  if not blacklist[id] then
+    assignments = assignments .. string.format(
+      "<a href='/practice?id=%s'>%s</a><br>\n", id, name)
+  end
 end
 
 ptp:close()
@@ -20,6 +36,9 @@ print(string.format([[
     <p class="brightwhite">Pieces to Practice Webiface</p>
     <p>Current assignments:</p>
     <p>%s</p>
+    <p>Practiced assignments:</p>
+    <p class="brightwhite">Name, Time, Rating<br>
+    %s</p>
   </body>
 </html>
-]], assignments or ""))
+]], assignments or "", practiced or ""))
