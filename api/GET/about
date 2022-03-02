@@ -1,0 +1,13 @@
+#!/usr/bin/env lua
+
+print([[
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+
+<html>
+<p><a href="/">Back</a></p>
+<p>Pieces to Practice is a lightweight FOSS music practice tracker written entirely in Lua.  It has both a command-line and a web inteface.</p>
+<p>Pieces to Practice requires a small subset of LuaPosix.  The web interface requires LuaSocket.</p>
+</html>
+]])

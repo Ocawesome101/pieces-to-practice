@@ -47,6 +47,7 @@ print(string.format([[
     <p>Fields, in order: Name, Time, Rating<br>
     Assignments are not sorted.<br>
     %s</p>
+    <p>---------------------<br><a href="/about">About</a></p>
   </body>
 </html>
 ]], streak or 0, assignments or "", practiced or ""))
