@@ -1,0 +1,30 @@
+#!/usr/bin/env lua
+
+local input = io.read("l")
+if input then
+  local name = input:match("name=(.+)"):gsub("%+", " ")
+  os.execute(string.format("./ptp add-assignment '%s'", name))
+  print([[
+<!DOCTYPE html>
+<meta charset="utf-8" http-equiv="refresh" content="1; URL=/">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+Assignment added.
+]])
+else
+  print([[
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+
+<html>
+  <body>
+    <p class="brightwhite">Add assignment</p>
+    <p>Enter assignment name and press ENTER.</p>
+    <form id="submit-assignment" method="GET" href="/submit-assignment">
+    <input type="text" id="name" name="name">
+    <input type="submit" hidden=true>
+    </form>
+  </body>
+</html>
+]])
+end

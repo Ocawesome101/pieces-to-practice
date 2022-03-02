@@ -39,11 +39,11 @@ print(string.format([[
   <body>
     <p class="brightwhite">Pieces to Practice<br>------------------</p>
     <p>Practice streak: <span class="brightwhite">%d</span></p>
-    <p>Current assignments:<br>
-       --------------------</p>
+    <p>Current assignments <a href="/add-assignment">Add</a><br>
+       -------------------</p>
     <p>%s</p>
-    <p>Practiced assignments:<br>
-       ----------------------</p>
+    <p>Practiced assignments<br>
+       ---------------------</p>
     <p>Fields, in order: Name, Time, Rating<br>
     Assignments are not sorted.<br>
     %s</p>

@@ -38,6 +38,6 @@ $ ptp get-streak
 
 #### DO NOT RUN THE WEB SERVER ON A PUBLICLY ACCESSIBLE COMPUTER. IT IS NOT SECURE, DOES NOT USE HTTPS, AND HAS NO AUTHENTICATION WHATSOEVER.
 
-Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface on `localhost`.  Access it though your browser.
+Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface on `localhost`.  [Access it though your browser here.](http://localhost)
 
-Adding and removing assignments through the web interface will come at a later date.
+Removing assignments through the web interface will come at a later date.
