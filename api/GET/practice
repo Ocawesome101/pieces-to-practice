@@ -20,8 +20,8 @@ print(string.format([[
 
 <html>
   <body>
-    Practicing %s<br>
-    <p>Choose rating:</p>
+    <p class="brightwhite">Practicing %s</p>
+    <p>Choose a rating:</p>
     <a href="/complete?id=%d?start=%d?rating=1">1</a>
     <a href="/complete?id=%d?start=%d?rating=2">2</a>
     <a href="/complete?id=%d?start=%d?rating=3">3</a>

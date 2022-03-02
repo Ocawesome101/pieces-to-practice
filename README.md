@@ -29,11 +29,15 @@ when done, enter a score between 1-10 and press ENTER
 $ ptp list days
 2022-02-28
 $ ptp list practiced
-189794  Dvořák - Humoresque No. 7
+189794  Dvořák - Humoresque No. 7       00:03:17        8
 $ ptp get-streak
 1
 ```
 
-# Webiface
+# Web Interface
 
-Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface.
+#### DO NOT RUN THE WEB SERVER ON A PUBLICLY ACCESSIBLE COMPUTER. IT IS NOT SECURE, DOES NOT USE HTTPS, AND HAS NO AUTHENTICATION WHATSOEVER.
+
+Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface on `localhost`.  Access it though your browser.
+
+Adding and removing assignments through the web interface will come at a later date.
