@@ -1,0 +1,11 @@
+#!/usr/bin/env lua
+
+local id = io.read("l"):match("id=(%d+)")
+
+os.execute("ptp del-assignment " .. id)
+
+print([[
+<meta http-equiv="refresh" content="1; URL=/">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+Assignment removed.
+]])

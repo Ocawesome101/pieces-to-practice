@@ -41,6 +41,12 @@ help:
 add-assignment <longname>:
   add the specified assignment to the program's data directory; prints the ID of the new assignment
 
+del-assignment <name>:
+  remove an assignment
+
+del-set <name>:
+  remove a practice set
+
 add-set <set>:
   create a new practice set
 
@@ -79,11 +85,34 @@ actions["add-assignment"] = function(longname)
   checkdirs()
   math.randomseed(os.time())
   local name = tostring(math.random(100000, 999999))
+
+  -- check if the assignment has already been added
+  for file in dirent.files(assignments) do
+    local full = assignments .. file
+    local handle = io.open(full, "r")
+    if handle then
+      local lname = handle:read()
+      handle:close()
+      if lname == longname then
+        print("Assignment already exists")
+        os.exit(1)
+      end
+    end
+  end
+
   local f, err = io.open(assignments .. name, "w")
   if not f then exit("failed opening file: %s", err) end
   f:write(longname)
   f:close()
   print(name)
+end
+
+actions["del-assignment"] = function(name)
+  os.remove(assignments .. name)
+end
+
+actions["del-set"] = function(name)
+  os.remove(assignments .. name)
 end
 
 actions["add-set"] = function(set)
