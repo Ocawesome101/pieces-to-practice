@@ -1,0 +1,25 @@
+#!/usr/bin/env lua
+
+local ptp = io.popen("./ptp list all", "r")
+local assignments = ""
+
+for assignment in ptp:lines("l") do
+  local id, name = assignment:match("^(%d+) *(.+)$")
+  assignments = assignments .. string.format("<a href='/practice?id=%s'>%s</a><br>\n", id, name)
+end
+
+ptp:close()
+
+print(string.format([[
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+
+<html>
+  <body>
+    <p class="brightwhite">Pieces to Practice Webiface</p>
+    <p>Current assignments:</p>
+    <p>%s</p>
+  </body>
+</html>
+]], assignments or ""))

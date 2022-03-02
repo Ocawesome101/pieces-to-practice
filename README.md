@@ -33,3 +33,7 @@ $ ptp list practiced
 $ ptp get-streak
 1
 ```
+
+# Webiface
+
+Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface.
