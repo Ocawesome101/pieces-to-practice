@@ -2,7 +2,11 @@
 
 local assignments = ""
 local practiced = ""
+local sets = "<option onclick='window.location=\"/?set=all\"'>all</option>"
 local blacklist = {}
+
+local lset = (io.read("l") or ""):match("set=(.+)")
+
 local ptp = io.popen("./ptp list practiced")
 
 for assignment in ptp:lines("l") do
@@ -14,7 +18,7 @@ end
 
 ptp:close()
 
-ptp = io.popen("./ptp list all", "r")
+ptp = io.popen("./ptp list " .. (lset or "all"), "r")
 
 for assignment in ptp:lines("l") do
   local id, name = assignment:match("^(%d+) *(.+)$")
@@ -22,6 +26,14 @@ for assignment in ptp:lines("l") do
     assignments = assignments .. string.format("<a href='/practice?id=%s'>%s</a> | <a href='/remove?id=%s'>Remove</a><br>\n",
       id, name, id)
   end
+end
+
+ptp:close()
+
+ptp = io.popen("./ptp list sets", "r")
+
+for set in ptp:lines("l") do
+  sets = sets .. string.format("<option onclick='window.location=\"/?set=%s\"'%s>%s</option>", set, set == lset and " selected" or "", set)
 end
 
 ptp:close()
@@ -39,6 +51,9 @@ print(string.format([[
   <body>
     <p class="brightwhite">Pieces to Practice<br>------------------</p>
     <p>Practice streak: <span class="brightwhite">%d</span></p>
+    <p>Current set:
+      <select id="set" name="set" required="required">%s</select>
+    </p>
     <p>Current assignments <a href="/add-assignment">Add</a><br>
        -------------------</p>
     <p>%s</p>
@@ -50,4 +65,4 @@ print(string.format([[
     <p>---------------------<br><a href="/about">About</a></p>
   </body>
 </html>
-]], streak or 0, assignments or "", practiced or ""))
+]], streak or 0, sets, assignments or "", practiced or ""))

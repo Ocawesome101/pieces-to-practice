@@ -16,7 +16,6 @@ server:listen()
 
 math.randomseed(os.time())
 while true do
-  print("A")
   local conn = assert(server:accept())
   local reqfields = {data = ""}
   repeat
