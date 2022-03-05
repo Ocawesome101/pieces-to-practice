@@ -1,11 +1,16 @@
 #!/usr/bin/env lua
 
 local id = io.read("l"):match("id=(%d+)")
+local set = (io.read("l") or "set=all"):match("set=(.+)")
 
-os.execute("ptp del-assignment " .. id)
+if set and set ~= "all" then
+  os.execute("./ptp del-from-set " .. id .. " " .. set)
+else
+  os.execute("./ptp del-assignment " .. id)
+end
 
-print([[
-<meta http-equiv="refresh" content="1; URL=/">
+print(string.format([[
+<meta http-equiv="refresh" content="1; URL=/?set=%s">
 <link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
 Assignment removed.
-]])
+]], set or "all"))

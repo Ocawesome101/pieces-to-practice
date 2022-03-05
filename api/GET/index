@@ -12,8 +12,8 @@ local ptp = io.popen("./ptp list practiced")
 for assignment in ptp:lines("l") do
   local id, name = assignment:match("^(%d+) *(.+)$")
   blacklist[id] = true
-  practiced = practiced .. string.format("<a href='/practice?id=%s'>%s</a> | <a href='/remove?id=%s'>Remove</a><br>\n",
-      id, name, id)
+  practiced = practiced .. string.format("<a href='/practice?id=%s'>%s</a> | <a href='/remove?id=%s&set=%s'>Remove</a><br>\n",
+      id, name, id, lset)
 end
 
 ptp:close()
@@ -23,8 +23,8 @@ ptp = io.popen("./ptp list " .. (lset or "all"), "r")
 for assignment in ptp:lines("l") do
   local id, name = assignment:match("^(%d+) *(.+)$")
   if not blacklist[id] then
-    assignments = assignments .. string.format("<a href='/practice?id=%s'>%s</a> | <a href='/remove?id=%s'>Remove</a><br>\n",
-      id, name, id)
+    assignments = assignments .. string.format("<a href='/practice?id=%s'>%s</a> | <a href='/remove?id=%s&set=%s'>Remove</a><br>\n",
+      id, name, id, lset)
   end
 end
 
