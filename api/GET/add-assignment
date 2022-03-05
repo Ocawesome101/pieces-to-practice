@@ -46,6 +46,10 @@ if input then
     if set == "all" then
       print(default)
     else
+      local ptp = io.popen("./ptp list all", "r")
+      local dat = ptp:read("a")
+      ptp:close()
+      dat = dat:gsub("\n", "<br>"):gsub(" +", "&nbsp;")
       print(string.format([[
 <!DOCTYPE html>
 <meta charset="utf-8">
@@ -54,6 +58,7 @@ if input then
 <html>
   <body>
     <p class="brightwhite">Add assignment to set</p>
+    <p>Assignments:<br>%s</p>
     <p>Enter an assignment ID and press ENTER.</p>
     <form id="submit-assignment" method="GET" href="/submit-assignment">
     <input type="text" id="name" name="name">
@@ -62,7 +67,7 @@ if input then
     </form>
   </body>
 </html>
-]], set, set))
+]], dat, set, set))
     end
   end
 else

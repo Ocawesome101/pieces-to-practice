@@ -38,5 +38,4 @@ $ ptp get-streak
 
 #### DO NOT RUN THE WEB SERVER ON A PUBLICLY ACCESSIBLE COMPUTER. IT IS NOT SECURE, DOES NOT USE HTTPS, AND HAS NO AUTHENTICATION WHATSOEVER.
 
-Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface on `localhost`.  [Access it though your browser here.](http://localhost)  Most `ptp` functionality (sans practice sets) should be available through this interface.
-
+Run `sudo env HOME=$HOME ./ws.lua` from the repository root to start a web interface on `localhost`.  [Access it though your browser here.](http://localhost)  Most `ptp` functionality should be available through this interface.
