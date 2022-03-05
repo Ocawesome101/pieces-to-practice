@@ -1,17 +1,6 @@
 #!/usr/bin/env lua
 
-local input = io.read("l")
-if input then
-  local name = input:match("name=(.+)"):gsub("%+", " ")
-  os.execute(string.format("./ptp add-assignment '%s'", name))
-  print([[
-<!DOCTYPE html>
-<meta charset="utf-8" http-equiv="refresh" content="1; URL=/">
-<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
-Assignment added.
-]])
-else
-  print([[
+local default = [[
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
@@ -26,5 +15,56 @@ else
     </form>
   </body>
 </html>
-]])
+]]
+
+local redir = [[
+<!DOCTYPE html>
+<meta charset="utf-8" http-equiv="refresh" content="1; URL=%s">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+Assignment added.
+]]
+
+local input = io.read("l")
+if input then
+  local name = input:match("name=(.+)")
+  if name then name = name:gsub("%+", " ") end
+  local input2 = io.read("l")
+  if input2 then
+    local set = input2:match("set=(.+)")
+    if set == "all" then
+      os.execute(string.format("./ptp add-assignment '%s'", name))
+      print(string.format(redir, "/?set=all"))
+    elseif set then
+      os.execute(string.format("./ptp add-to-set %s %s", name, set))
+      print(string.format(redir, "/?set="..set))
+    end
+  elseif name then
+    os.execute(string.format("./ptp add-assignment '%s'", name))
+    print(string.format(redir, "/?set=all"))
+  else
+    local set = input:match("set=(.+)")
+    if set == "all" then
+      print(default)
+    else
+      print(string.format([[
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ulos.pickardayune.com/ulos/style.css">
+
+<html>
+  <body>
+    <p class="brightwhite">Add assignment to set</p>
+    <p>Enter an assignment ID and press ENTER.</p>
+    <form id="submit-assignment" method="GET" href="/submit-assignment">
+    <input type="text" id="name" name="name">
+    <input type="text" id="set" name="set" value="%s" hidden=true>
+    <input type="submit" hidden=true>
+    </form>
+  </body>
+</html>
+]], set, set))
+    end
+  end
+else
+  print(default)
 end

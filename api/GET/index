@@ -54,8 +54,8 @@ print(string.format([[
     <p>Current set:
       <select id="set" name="set" required="required">%s</select>
     </p>
-    <p>Current assignments <a href="/add-assignment">Add</a><br>
-       -------------------</p>
+    <p>Set Contents <a href="/add-assignment?set=%s">Add</a><br>
+       ------------</p>
     <p>%s</p>
     <p>Practiced assignments<br>
        ---------------------</p>
@@ -65,4 +65,4 @@ print(string.format([[
     <p>---------------------<br><a href="/about">About</a></p>
   </body>
 </html>
-]], streak or 0, sets, assignments or "", practiced or ""))
+]], streak or 0, sets, lset or "all", assignments or "", practiced or ""))
