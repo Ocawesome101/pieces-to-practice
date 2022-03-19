@@ -2,7 +2,7 @@
 
 A simple practice app intended for marking music practice.  Run `ptp help` for usage information.
 
-Requires LuaPosix. GUI requires wxlua (available as `wxlua-git` from the AUR).
+Requires LuaPosix. The web UI requires LuaSocket.
 
 Stores practice data in `~/.piecestopractice`:
 
