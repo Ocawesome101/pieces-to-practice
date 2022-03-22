@@ -5,5 +5,4 @@ RUN luarocks install luasocket
 VOLUME /root/.piecestopractice
 COPY . /ptp
 WORKDIR /ptp
-EXPOSE 80
-ENTRYPOINT ./ws.lua
+ENTRYPOINT ["./ws.lua"]
